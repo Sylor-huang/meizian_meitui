@@ -38,25 +38,32 @@ def get_html(all_url):
             }
             parse_html = data['link']
             path = data['title'].replace("/", '_')
-            save_to_mongo(data)
             print('正在创建文件夹')
             mkdir(path)
             parse_index(parse_html)
-
+            save_to_mongo(data)
     except:
         return None
 
 def parse_index(parse_html):
-    parse_content = response(parse_html)
+    page_content = response(parse_html)
+    page_a = BeautifulSoup(page_content.text,'lxml').find('div',class_='text-center').find_all('a')[:-2]
+    for a in page_a:
+        page_html = 'http://meizian.com' + a['href']
+        img_html(page_html)
+
+def img_html(page_html):
+    parse_content = response(page_html)
     img_a = BeautifulSoup(parse_content.text,'lxml').find('div',id='gallery').find_all('a')
     for a in img_a:
         imgs = a['href']
+        print(imgs)
         print('正在准备保存图片')
         save_img(imgs)
 
 def save_img(imgs):
     img = response(imgs)
-    name = imgs[-9:-4]
+    name = imgs[-12:-4]
     f=open(name+'.jpg','ab')
     f.write(img.content)
     f.close()
@@ -69,18 +76,18 @@ def save_to_mongo(data):
 
 def mkdir(path):
     path = path.strip()
-    os.makedirs(os.path.join("/opt/meizian",path))
-    os.chdir(os.path.join("/opt/meizian/"+path))
+    os.makedirs(os.path.join("/opt/meizian2",path))
+    os.chdir(os.path.join("/opt/meizian2/"+path))
 
 
 def main(p):
-    all_url = 'http://meizian.com/taotu/aagirl.html' + '?p=' +str(p)
+    all_url = 'http://meizian.com/meitui.html' + '?p=' +str(p)
     get_html(all_url)
 
 
 if __name__ == '__main__':
     pool = Pool()
-    pool.map(main,[p for p in range(1,33)])
+    pool.map(main,[p for p in range(1,76)])
 
 
 

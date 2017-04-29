@@ -6,5 +6,5 @@
 # @Software: PyCharm
 
 MONGO_URI = 'localhost'
-MONGO_DB = 'meizian'
-MONGO_TABLE = 'meizian'
+MONGO_DB = 'meizian2'
+MONGO_TABLE = 'meizian2'
